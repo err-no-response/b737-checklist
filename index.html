@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>B738 Normal Checklist</title>
+  <meta name="description" content="Boeing 737-800 normal checklist study aid. Not an official airline or Boeing document." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0c1218;
+      --panel: #141c26;
+      --panel-2: #1b2633;
+      --line: #2a3a4c;
+      --text: #e7eef6;
+      --muted: #8ea0b5;
+      --amber: #f0b429;
+      --amber-dim: #c4921a;
+      --green: #3dce7a;
+      --green-dim: #1e7a45;
+      --blue: #6cb6ff;
+      --danger: #ff6b6b;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(1200px 500px at 10% -10%, rgba(240, 180, 41, 0.08), transparent 50%),
+        radial-gradient(900px 400px at 100% 0%, rgba(108, 182, 255, 0.08), transparent 45%),
+        var(--bg);
+      color: var(--text);
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+      line-height: 1.45;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(12px);
+      background: rgba(12, 18, 24, 0.88);
+      border-bottom: 1px solid var(--line);
+    }
+    .wrap { max-width: 920px; margin: 0 auto; padding: 0 16px; }
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 0 10px;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .mark {
+      width: 42px; height: 42px; border-radius: 10px;
+      background: linear-gradient(160deg, #243447, #121a22);
+      border: 1px solid var(--line);
+      display: grid; place-items: center;
+      font-family: "IBM Plex Mono", monospace;
+      font-weight: 500;
+      color: var(--amber);
+      letter-spacing: 0.04em;
+    }
+    h1 { margin: 0; font-size: 1.15rem; letter-spacing: 0.04em; font-weight: 600; }
+    .sub { color: var(--muted); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    button, .ghost {
+      border: 1px solid var(--line);
+      background: var(--panel-2);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font: inherit;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+    button:hover { border-color: var(--amber-dim); }
+    button.primary { background: #2a2212; border-color: #6d5316; color: var(--amber); }
+    nav.phases {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding: 0 0 12px;
+      scrollbar-width: none;
+    }
+    nav.phases::-webkit-scrollbar { display: none; }
+    nav.phases a {
+      flex: 0 0 auto;
+      text-decoration: none;
+      color: var(--muted);
+      border: 1px solid var(--line);
+      background: var(--panel);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 0.78rem;
+      letter-spacing: 0.03em;
+    }
+    nav.phases a.active, nav.phases a:hover { color: var(--text); border-color: #4d6280; }
+    nav.phases a.done { color: var(--green); border-color: var(--green-dim); }
+    main { padding: 18px 0 64px; }
+    .banner {
+      background: #1a160e;
+      border: 1px solid #5a4518;
+      color: #f3d48a;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 0.88rem;
+      margin-bottom: 16px;
+    }
+    .progress-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow);
+    }
+    .bar { flex: 1; height: 8px; background: #0d141c; border-radius: 99px; overflow: hidden; border: 1px solid var(--line); }
+    .bar > span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--amber), var(--green)); }
+    .count { font-family: "IBM Plex Mono", monospace; font-size: 0.85rem; color: var(--muted); min-width: 72px; text-align: right; }
+    section.phase {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      margin-bottom: 14px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    section.phase header.ph {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      padding: 12px 14px;
+      background: linear-gradient(180deg, #1c2836, #16202b);
+      border-bottom: 1px solid var(--line);
+    }
+    section.phase h2 { margin: 0; font-size: 0.95rem; letter-spacing: 0.12em; text-transform: uppercase; }
+    .who { color: var(--muted); font-size: 0.75rem; }
+    .item {
+      display: grid;
+      grid-template-columns: 28px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 11px 14px;
+      border-top: 1px solid rgba(42, 58, 76, 0.7);
+      cursor: pointer;
+      user-select: none;
+    }
+    .item:first-of-type { border-top: 0; }
+    .item:hover { background: rgba(255, 255, 255, 0.02); }
+    .item.checked { background: rgba(61, 206, 122, 0.06); }
+    .box {
+      width: 18px; height: 18px; border-radius: 5px;
+      border: 1.5px solid #5d738c;
+      display: grid; place-items: center;
+      color: transparent;
+      font-size: 13px;
+    }
+    .item.checked .box { background: var(--green-dim); border-color: var(--green); color: #eafff3; }
+    .challenge { font-weight: 500; }
+    .item.checked .challenge { color: #b7c6d6; text-decoration: line-through; text-decoration-color: rgba(183, 198, 214, 0.45); }
+    .response {
+      font-family: "IBM Plex Mono", monospace;
+      color: var(--amber);
+      font-size: 0.86rem;
+      text-align: right;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+    .item.checked .response { color: var(--green); }
+    input.fill {
+      width: 72px;
+      background: #0e1620;
+      border: 1px solid var(--line);
+      color: var(--text);
+      border-radius: 6px;
+      padding: 4px 6px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.82rem;
+      text-align: center;
+    }
+    input.fill.wide { width: 110px; }
+    .complete-call {
+      display: none;
+      margin: 0;
+      padding: 8px 14px 12px;
+      color: var(--green);
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+    }
+    section.phase.done .complete-call { display: block; }
+    footer {
+      color: var(--muted);
+      font-size: 0.8rem;
+      padding-bottom: 28px;
+    }
+    @media (max-width: 640px) {
+      .item { grid-template-columns: 28px 1fr; }
+      .response { grid-column: 2; justify-content: flex-start; text-align: left; }
+      .top { align-items: flex-start; }
+    }
+    @media print {
+      header, .actions, .banner, footer .noprint { display: none !important; }
+      body { background: white; color: black; }
+      section.phase, .progress-card { box-shadow: none; break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="top">
+        <div class="brand">
+          <div class="mark">738</div>
+          <div>
+            <h1>B737-800 Normal Checklist</h1>
+            <div class="sub">Challenge and response · study aid</div>
+          </div>
+        </div>
+        <div class="actions">
+          <button id="reset" type="button">Reset checks</button>
+        </div>
+      </div>
+      <nav class="phases" id="nav"></nav>
+    </div>
+  </header>
+  <main class="wrap">
+    <div class="banner">
+      Study and simulator aid only. Not a Boeing, airline, or regulatory document. Operator SOPs, the QRH, and the FCOM override this page. Do not use it for real flight operations.
+    </div>
+    <div class="progress-card">
+      <div>
+        <strong>Flight progress</strong>
+        <div class="sub" style="margin-top:2px">Checks persist in this browser</div>
+      </div>
+      <div class="bar" aria-hidden="true"><span id="bar"></span></div>
+      <div class="count" id="count">0 / 0</div>
+    </div>
+    <div id="phases"></div>
+    <footer>
+      <p>Normal checklist is read after the related flow is finished. Both pilots verify. The reading pilot calls “____ checklist complete.”</p>
+      <p class="noprint">Blanks are for the numbers you brief (heading, altimeter, V-speeds, flap, trim, landing data). They save with the checks.</p>
+    </footer>
+  </main>
+  <script>
+    const phases = [
+      {
+        id: "preflight",
+        title: "Preflight",
+        who: "Called by Captain · read by FO",
+        items: [
+          ["Oxygen", "Tested, 100%"],
+          ["Nav transfer & display switches", "NORMAL, AUTO"],
+          ["Window heat", "ON"],
+          ["Pressurization mode selector", "AUTO"],
+          ["Flight instruments", "HDG ___, ALT ___", ["hdg", "alt"]],
+          ["Parking brake", "SET"],
+          ["Engine start levers", "CUTOFF"]
+        ]
+      },
+      {
+        id: "before-start",
+        title: "Before Start",
+        who: "Called by Captain · read by FO",
+        items: [
+          ["Flight deck door", "Closed and locked"],
+          ["Fuel", "___ kg, pumps ON", ["fuel"]],
+          ["Passenger signs", "ON"],
+          ["Windows", "Locked"],
+          ["MCP", "V2 ___, HDG ___, ALT ___", ["v2mcp", "hdgmcp", "altmcp"]],
+          ["Takeoff speeds", "V1 ___, VR ___, V2 ___", ["v1", "vr", "v2"]],
+          ["CDU preflight", "Completed"],
+          ["Rudder & aileron trim", "Free and 0"],
+          ["Taxi & takeoff briefing", "Completed"],
+          ["Anti-collision light", "ON"]
+        ]
+      },
+      {
+        id: "before-taxi",
+        title: "Before Taxi",
+        who: "Called by Captain · read by FO",
+        items: [
+          ["Generators", "ON"],
+          ["Probe heat", "ON"],
+          ["Anti-ice", "___", ["antiice"]],
+          ["Isolation valve", "AUTO"],
+          ["Engine start switches", "CONT"],
+          ["Recall", "Checked"],
+          ["Autobrake", "RTO"],
+          ["Engine start levers", "IDLE detent"],
+          ["Flight controls", "Checked"],
+          ["Ground equipment", "Clear"]
+        ]
+      },
+      {
+        id: "before-takeoff",
+        title: "Before Takeoff",
+        who: "Called by PF · read by PM",
+        items: [
+          ["Flaps", "___, green light", ["toflap"]],
+          ["Stabilizer trim", "___ units", ["trim"]]
+        ]
+      },
+      {
+        id: "after-takeoff",
+        title: "After Takeoff",
+        who: "Called by PF · read by PM",
+        items: [
+          ["Engine bleeds", "ON"],
+          ["Packs", "AUTO"],
+          ["Landing gear", "UP and OFF"],
+          ["Flaps", "UP, no lights"]
+        ]
+      },
+      {
+        id: "descent",
+        title: "Descent",
+        who: "Called by PF · read by PM",
+        items: [
+          ["Pressurization", "LAND ALT ___", ["landalt"]],
+          ["Recall", "Checked"],
+          ["Autobrake", "___", ["abrake"]],
+          ["Landing data", "VREF ___, minimums ___", ["vref", "mins"]],
+          ["Approach briefing", "Completed"]
+        ]
+      },
+      {
+        id: "approach",
+        title: "Approach",
+        who: "Called by PF · read by PM",
+        items: [
+          ["Altimeters", "___", ["qnh"]]
+        ]
+      },
+      {
+        id: "landing",
+        title: "Landing",
+        who: "Called by PF · read by PM",
+        items: [
+          ["Engine start switches", "CONT"],
+          ["Speedbrake", "ARMED"],
+          ["Landing gear", "DOWN"],
+          ["Flaps", "___, green light", ["ldgflap"]]
+        ]
+      },
+      {
+        id: "after-landing",
+        title: "After Landing",
+        who: "Silent · accomplished by PM",
+        items: [
+          ["Speedbrake", "DOWN"],
+          ["Flaps", "UP"],
+          ["Probe heat", "AUTO / OFF"],
+          ["Landing lights", "OFF"],
+          ["Taxi lights", "As required"],
+          ["APU", "As required"],
+          ["Transponder", "As required"]
+        ]
+      },
+      {
+        id: "shutdown",
+        title: "Shutdown",
+        who: "Called by Captain · read by FO",
+        items: [
+          ["Fuel pumps", "OFF"],
+          ["Probe heat", "AUTO"],
+          ["Hydraulic panel", "SET"],
+          ["Flaps", "UP"],
+          ["Parking brake", "___", ["park"]],
+          ["Engine start levers", "CUTOFF"],
+          ["Weather radar", "OFF"]
+        ]
+      },
+      {
+        id: "secure",
+        title: "Secure",
+        who: "Reference · accomplished by FO",
+        items: [
+          ["IRSs", "OFF"],
+          ["Emergency exit lights", "OFF"],
+          ["Window heat", "OFF"],
+          ["Packs", "OFF"]
+        ]
+      }
+    ];
+
+    const storeKey = "b738-checklist-v1";
+    const state = JSON.parse(localStorage.getItem(storeKey) || "{\"checks\":{},\"fills\":{}}");
+    state.checks = state.checks || {};
+    state.fills = state.fills || {};
+
+    function save() {
+      localStorage.setItem(storeKey, JSON.stringify(state));
+    }
+
+    const nav = document.getElementById("nav");
+    const root = document.getElementById("phases");
+
+    phases.forEach((phase) => {
+      const a = document.createElement("a");
+      a.href = "#" + phase.id;
+      a.textContent = phase.title;
+      a.dataset.phase = phase.id;
+      nav.appendChild(a);
+
+      const section = document.createElement("section");
+      section.className = "phase";
+      section.id = phase.id;
+      section.innerHTML = `<header class="ph"><h2>${phase.title}</h2><span class="who">${phase.who}</span></header>`;
+
+      phase.items.forEach((item, idx) => {
+        const id = phase.id + ":" + idx;
+        const row = document.createElement("div");
+        row.className = "item" + (state.checks[id] ? " checked" : "");
+        row.dataset.id = id;
+        row.dataset.phase = phase.id;
+
+        const blanks = item[2] || [];
+        let responseHtml = item[1];
+        blanks.forEach((key) => {
+          const val = state.fills[key] || "";
+          const wide = key === "fuel" || key === "antiice" || key === "mins" ? " wide" : "";
+          responseHtml = responseHtml.replace("___", `<input class="fill${wide}" data-fill="${key}" value="${escapeAttr(val)}" inputmode="decimal" />`);
+        });
+
+        row.innerHTML = `<div class="box">✓</div><div class="challenge">${item[0]}</div><div class="response">${responseHtml}</div>`;
+        row.addEventListener("click", (e) => {
+          if (e.target.tagName === "INPUT") return;
+          state.checks[id] = !state.checks[id];
+          row.classList.toggle("checked", !!state.checks[id]);
+          save();
+          refresh();
+        });
+        row.querySelectorAll("input.fill").forEach((input) => {
+          input.addEventListener("click", (e) => e.stopPropagation());
+          input.addEventListener("input", () => {
+            state.fills[input.dataset.fill] = input.value;
+            save();
+          });
+        });
+        section.appendChild(row);
+      });
+
+      const call = document.createElement("p");
+      call.className = "complete-call";
+      call.textContent = phase.title.toUpperCase() + " CHECKLIST COMPLETE";
+      section.appendChild(call);
+      root.appendChild(section);
+    });
+
+    function escapeAttr(s) {
+      return String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+    }
+
+    function refresh() {
+      let done = 0;
+      let total = 0;
+      phases.forEach((phase) => {
+        const items = document.querySelectorAll(`.item[data-phase="${phase.id}"]`);
+        let phaseDone = 0;
+        items.forEach((el) => {
+          total += 1;
+          if (el.classList.contains("checked")) {
+            done += 1;
+            phaseDone += 1;
+          }
+        });
+        const section = document.getElementById(phase.id);
+        section.classList.toggle("done", phaseDone === items.length && items.length > 0);
+        const link = nav.querySelector(`a[data-phase="${phase.id}"]`);
+        link.classList.toggle("done", phaseDone === items.length);
+      });
+      document.getElementById("count").textContent = done + " / " + total;
+      document.getElementById("bar").style.width = total ? (done / total * 100) + "%" : "0";
+    }
+
+    document.getElementById("reset").addEventListener("click", () => {
+      if (!confirm("Clear all checks? Typed speeds and altitudes stay.")) return;
+      state.checks = {};
+      save();
+      document.querySelectorAll(".item").forEach((el) => el.classList.remove("checked"));
+      refresh();
+    });
+
+    const links = [...nav.querySelectorAll("a")];
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        links.forEach((l) => l.classList.toggle("active", l.dataset.phase === entry.target.id));
+      });
+    }, { rootMargin: "-30% 0px -60% 0px", threshold: 0.1 });
+    phases.forEach((p) => observer.observe(document.getElementById(p.id)));
+    refresh();
+  </script>
+</body>
+</html>
